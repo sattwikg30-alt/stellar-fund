@@ -72,10 +72,16 @@ stellar contract deploy --wasm target/wasm32v1-none/release/hello_world.wasm --s
 
 ---
 
-## 📸 Screenshots & Demo
+## 📸 Screenshots 
 
-### 🚀 Live Demo
-[Insert Live Demo Link Here] <!-- Update this if deployed to Vercel/Netlify -->
+
 
 ### Wallet Options
-![Wallet Options Screenshot](screenshot.png) <!-- Please add your actual screenshot image file and link it here -->
+![Wallet Options Screenshot](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777569968/Screenshot_2026-04-30_224942_se3h0c.png) 
+Wallet Options Screenshot.
+
+![Wallet transaction ](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570036/Screenshot_2026-04-30_225210_npmjde.png)
+wallet trans
+
+![history ](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570099/Screenshot_2026-04-30_225145_r1swmb.png)
+history
