@@ -42,11 +42,3 @@ export const connectWallet = async (type: string): Promise<string> => {
     throw new Error("Failed to connect wallet. Please check if the extension is installed and unlocked.");
   }
 };
-
-/**
- * Shortens a Stellar address for display (e.g., GABC...XYZ1)
- */
-export const shortenAddress = (address: any) => {
-  if (!address || typeof address !== "string") return "";
-  return `${address.slice(0, 4)}...${address.slice(-4)}`;
-};

@@ -110,7 +110,7 @@ export const donate = async (donor: string, campaignId: number, amount: number):
     const operation = contract.call(
       "donate",
       new Address(donor).toScVal(),
-      nativeToScVal(BigInt(campaignId), { type: "u32" }),
+      nativeToScVal(campaignId, { type: "u32" }),
       nativeToScVal(BigInt(amount), { type: "i128" })
     );
 
@@ -190,7 +190,7 @@ export const getCampaign = async (id: number): Promise<StellarResponse> => {
       new Account("GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF", "0"), 
       { fee: "0", networkPassphrase: NETWORK_PASSPHRASE }
     )
-      .addOperation(contract.call("get_campaign", nativeToScVal(BigInt(id), { type: "u32" })))
+      .addOperation(contract.call("get_campaign", nativeToScVal(id, { type: "u32" })))
       .setTimeout(30)
       .build();
 
@@ -219,7 +219,7 @@ export const getDonations = async (campaignId: number): Promise<StellarResponse<
       new Account("GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF", "0"), 
       { fee: "0", networkPassphrase: NETWORK_PASSPHRASE }
     )
-      .addOperation(contract.call("get_donations", nativeToScVal(BigInt(campaignId), { type: "u32" })))
+      .addOperation(contract.call("get_donations", nativeToScVal(campaignId, { type: "u32" })))
       .setTimeout(30)
       .build();
 

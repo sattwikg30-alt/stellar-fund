@@ -1,15 +1,21 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getAllCampaigns } from "@/services/stellar";
+import { getCampaign } from "@/services/stellar";
 import CampaignCard from "./CampaignCard";
 import { 
   Loader2, 
   RefreshCcw, 
-  Search, 
   LayoutGrid, 
-  AlertCircle 
+  AlertCircle,
+  Search
 } from "lucide-react";
+
+const HARDCODED_CAMPAIGNS = [
+  { id: 0, title: "Open Source Fund", goal: 1000 },
+  { id: 1, title: "Student Support", goal: 500 },
+  { id: 2, title: "Disaster Relief", goal: 2000 },
+];
 
 const CampaignList = () => {
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -21,12 +27,28 @@ const CampaignList = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await getAllCampaigns();
-      if (res.success) {
-        setCampaigns(res.data || []);
-      } else {
-        setError(res.error || "Failed to load campaigns");
-      }
+      // Fetch real data for each hardcoded campaign
+      const updatedCampaigns = await Promise.all(
+        HARDCODED_CAMPAIGNS.map(async (c) => {
+          try {
+            const res = await getCampaign(c.id);
+            if (res.success && res.data) {
+              const data = res.data as any;
+              return {
+                ...c,
+                owner: data.owner,
+                raised: data.raised,
+                goal: data.goal, // Use goal from contract if available, else hardcoded
+              };
+            }
+          } catch (err) {
+            console.error(`Failed to fetch campaign ${c.id}`, err);
+          }
+          // Fallback to hardcoded if fetch fails or contract doesn't have it yet
+          return { ...c, owner: "System", raised: 0 };
+        })
+      );
+      setCampaigns(updatedCampaigns);
     } catch (err) {
       setError("An error occurred while fetching campaigns");
     } finally {

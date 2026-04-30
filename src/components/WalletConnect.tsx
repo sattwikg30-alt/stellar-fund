@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useWallet } from "@/context/WalletProvider";
-import { shortenAddress, WalletType } from "@/lib/wallet";
+import { WalletType } from "@/lib/wallet";
+import { shortenAddress } from "@/lib/utils";
 import { Wallet, LogOut, Loader2, AlertCircle, ChevronRight, X, User, Clock, Copy, Check } from "lucide-react";
 
 const WalletConnect = () => {

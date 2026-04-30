@@ -3,9 +3,11 @@
 import React from "react";
 import WalletConnect from "@/components/WalletConnect";
 import ContractInfo from "@/components/ContractInfo";
-import CreateCampaign from "@/components/CreateCampaign";
 import CampaignList from "@/components/CampaignList";
-import { Sparkles, Globe, Shield, Zap } from "lucide-react";
+import Leaderboard from "@/components/Leaderboard";
+import ActivityFeed from "@/components/ActivityFeed";
+import TransactionHistory from "@/components/TransactionHistory";
+import { Sparkles, Globe, Shield, Zap, TrendingUp, Users, History } from "lucide-react";
 
 export default function Home() {
   return (
@@ -30,8 +32,8 @@ export default function Home() {
 
           <div className="flex items-center gap-8">
             <div className="hidden md:flex items-center gap-6">
-              {["Explore", "How it Works", "Governance"].map((item) => (
-                <a key={item} href="#" className="text-sm font-bold text-zinc-500 hover:text-blue-600 transition-colors uppercase tracking-widest">
+              {["Explore", "Leaderboard", "Activity"].map((item) => (
+                <a key={item} href={`#${item.toLowerCase()}`} className="text-sm font-bold text-zinc-500 hover:text-blue-600 transition-colors uppercase tracking-widest">
                   {item}
                 </a>
               ))}
@@ -73,26 +75,42 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left Column: Create */}
-          <div className="lg:col-span-4 sticky top-28 h-fit">
-            <CreateCampaign onCreated={() => window.dispatchEvent(new Event("refreshCampaigns"))} />
-            <div className="mt-8 p-6 bg-indigo-600 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-600/20 relative overflow-hidden">
-              <div className="relative z-10">
-                <h4 className="font-black text-lg mb-2">Need Help?</h4>
-                <p className="text-sm text-white/80 font-medium leading-relaxed">Our developer guide covers everything from wallet setup to contract interaction.</p>
-                <button className="mt-4 px-6 py-2 bg-white text-indigo-600 rounded-xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform">
-                  View Guide
-                </button>
-              </div>
-              <Zap className="absolute -bottom-4 -right-4 w-32 h-32 text-white/10 rotate-12" />
+        {/* Campaign Section */}
+        <section id="explore" className="mb-32">
+          <CampaignList />
+        </section>
+
+        {/* Stats & Activity Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-32">
+          <section id="leaderboard">
+            <Leaderboard />
+          </section>
+          <section id="activity">
+            <ActivityFeed />
+          </section>
+        </div>
+
+        {/* Transaction History Section */}
+        <section id="history" className="mb-32">
+          <TransactionHistory />
+        </section>
+
+        {/* Call to Action */}
+        <div className="p-12 bg-blue-600 rounded-[3rem] text-white text-center relative overflow-hidden shadow-2xl shadow-blue-600/20">
+          <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+            <h2 className="text-4xl font-black tracking-tight">Ready to start your own project?</h2>
+            <p className="text-white/80 font-medium">Join hundreds of visionaries raising funds for the next big thing on Stellar.</p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <button className="px-8 py-4 bg-white text-blue-600 rounded-2xl font-black hover:scale-105 transition-transform shadow-xl">
+                Get Started
+              </button>
+              <button className="px-8 py-4 bg-blue-700 text-white rounded-2xl font-black hover:scale-105 transition-transform border border-white/10">
+                Learn More
+              </button>
             </div>
           </div>
-
-          {/* Right Column: List */}
-          <div className="lg:col-span-8">
-            <CampaignList />
-          </div>
+          <Sparkles className="absolute -top-12 -left-12 w-64 h-64 text-white/10 rotate-12" />
+          <Globe className="absolute -bottom-12 -right-12 w-64 h-64 text-white/10 -rotate-12" />
         </div>
       </div>
 
