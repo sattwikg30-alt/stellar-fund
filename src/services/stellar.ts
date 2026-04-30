@@ -109,8 +109,8 @@ export const donate = async (donor: string, campaignId: number, amount: number):
 
     const operation = contract.call(
       "donate",
-      new Address(donor).toScVal(),
       nativeToScVal(campaignId, { type: "u32" }),
+      new Address(donor).toScVal(),
       nativeToScVal(BigInt(amount), { type: "i128" })
     );
 

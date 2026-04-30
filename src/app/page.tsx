@@ -3,13 +3,15 @@
 import React from "react";
 import WalletConnect from "@/components/WalletConnect";
 import ContractInfo from "@/components/ContractInfo";
+import CreateCampaign from "@/components/CreateCampaign";
 import CampaignList from "@/components/CampaignList";
 import Leaderboard from "@/components/Leaderboard";
 import ActivityFeed from "@/components/ActivityFeed";
 import TransactionHistory from "@/components/TransactionHistory";
-import { Sparkles, Globe, Shield, Zap, TrendingUp, Users, History } from "lucide-react";
+import { Sparkles, Globe, Shield, Zap, TrendingUp, Users, History, Plus } from "lucide-react";
 
 export default function Home() {
+  const [showCreate, setShowCreate] = React.useState(false);
   return (
     <main className="min-h-screen bg-[#fafafa] dark:bg-black selection:bg-blue-600/30">
       {/* Background Orbs */}
@@ -32,6 +34,13 @@ export default function Home() {
 
           <div className="flex items-center gap-8">
             <div className="hidden md:flex items-center gap-6">
+              <button 
+                onClick={() => setShowCreate(!showCreate)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 text-blue-600 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all"
+              >
+                <Plus className="w-3 h-3" />
+                {showCreate ? "Close Creator" : "Create Project"}
+              </button>
               {["Explore", "Leaderboard", "Activity"].map((item) => (
                 <a key={item} href={`#${item.toLowerCase()}`} className="text-sm font-bold text-zinc-500 hover:text-blue-600 transition-colors uppercase tracking-widest">
                   {item}
@@ -46,6 +55,14 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-32 relative z-10">
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-24 space-y-6">
+          {showCreate && (
+            <div className="mb-12 animate-in fade-in zoom-in duration-300">
+              <CreateCampaign onCreated={() => {
+                setShowCreate(false);
+                window.dispatchEvent(new Event("refreshCampaigns"));
+              }} />
+            </div>
+          )}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/10 rounded-full text-blue-600 text-xs font-black uppercase tracking-[0.2em] mb-4">
             <Sparkles className="w-3 h-3" />
             Empowering Visionaries
