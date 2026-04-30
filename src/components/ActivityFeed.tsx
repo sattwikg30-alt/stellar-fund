@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getDonations } from "@/services/stellar";
+import { getDonations, getAllCampaigns } from "@/services/stellar";
 import { shortenAddress, formatXLM } from "@/lib/utils";
 import { Activity, ArrowUpRight, Loader2, Clock } from "lucide-react";
 
@@ -17,7 +17,14 @@ const ActivityFeed = () => {
 
   const fetchActivities = async () => {
     try {
-      const campaignIds = [0, 1, 2];
+      // 1. Get all campaigns to find all IDs
+      const campaignRes = await getAllCampaigns();
+      let campaignIds = [0, 1, 2]; // Default hardcoded
+      if (campaignRes.success && Array.isArray(campaignRes.data)) {
+        const dynamicIds = (campaignRes.data as any[]).map(c => c.id);
+        campaignIds = Array.from(new Set([...campaignIds, ...dynamicIds]));
+      }
+
       let allActivities: DonationActivity[] = [];
 
       await Promise.all(

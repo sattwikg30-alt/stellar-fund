@@ -72,6 +72,29 @@ stellar2.0/
 | **Icons** | [Lucide React](https://lucide.dev/) | Consistent iconography |
 
 ---
+
+## 📜 Smart Contract Functions
+
+The core business logic runs on the Stellar network via a Soroban smart contract. The contract provides the following operations:
+
+* `create_campaign(owner: Address, title: String, goal: i128) -> u32`
+  * **Purpose:** Initializes a new crowdfunding campaign.
+  * **Details:** Enforces authorization from the `owner`. Stores the campaign with a unique `id` and sets the initial total raised to `0`. Emits a `CampaignCreatedEvent`.
+
+* `donate(from: Address, campaign_id: u32, amount: i128)`
+  * **Purpose:** Allows users to fund active campaigns.
+  * **Details:** Requires `from` to authorize the transaction. Checks if the campaign exists, updates the campaign's total, and tracks the donor's individual contribution. Emits a `DonationEvent`.
+
+* `get_all_campaigns() -> Map<u32, Campaign>`
+  * **Purpose:** Reads the entire state of all campaigns from the blockchain storage. Used by the frontend to display the explore page.
+
+* `get_campaign(campaign_id: u32) -> Campaign`
+  * **Purpose:** Retrieves data (title, goal, total raised, owner) for a single specific campaign.
+
+* `get_donations(campaign_id: u32) -> Map<Address, i128>`
+  * **Purpose:** Returns a map of all donors and their respective contribution amounts for a specific campaign.
+
+---
 * **Deployed Contract Address:** `CAHJIP3GBQIXOK2HULS7ALYI2PTKEXEMQYMKAESD3BOZQ2BD5QRUWO56`
 * **Network:** Stellar Testnet
 * **Example Transaction Hash (Deployment/Call):** 
@@ -133,8 +156,9 @@ Wallet Options- multiwallet.
 ![Wallet transaction ](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570036/Screenshot_2026-04-30_225210_npmjde.png)
 Wallet transactions 
 
-![history ](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570099/Screenshot_2026-04-30_225145_r1swmb.png)
+![history ](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777572553/Screenshot_2026-04-30_233749_gfuent.png)
 History
 
-![contract deployed and deployment id](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570099/Screenshot_2026-04-30_225145_r1swmb.png)
+![Contract deployed and deployment id] (https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570637/Screenshot_2026-04-30_230655_zsbqw6.png)
 Contract deployed and deployment id
+

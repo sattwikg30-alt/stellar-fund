@@ -57,7 +57,7 @@ export const createCampaign = async (owner: string, title: string, goal: number)
       "create_campaign",
       new Address(owner).toScVal(),
       nativeToScVal(title, { type: "string" }),
-      nativeToScVal(BigInt(goal), { type: "i128" })
+      nativeToScVal(BigInt(Math.floor(goal)), { type: "i128" })
     );
 
     const tx = new TransactionBuilder(account, {
@@ -111,7 +111,7 @@ export const donate = async (donor: string, campaignId: number, amount: number):
       "donate",
       nativeToScVal(campaignId, { type: "u32" }),
       new Address(donor).toScVal(),
-      nativeToScVal(BigInt(amount), { type: "i128" })
+      nativeToScVal(BigInt(Math.floor(amount)), { type: "i128" })
     );
 
     const tx = new TransactionBuilder(account, {
@@ -132,7 +132,11 @@ export const donate = async (donor: string, campaignId: number, amount: number):
     
     const result = await server.sendTransaction(TransactionBuilder.fromXDR(signedTxXdr, NETWORK_PASSPHRASE));
     
-    return { success: true, txHash: result.hash };
+    if (result.status === "PENDING" || (result.status as string) === "SUCCESS") {
+      return { success: true, txHash: result.hash };
+    }
+    
+    throw new Error(`Transaction failed with status: ${result.status}`);
   } catch (err: unknown) {
     console.error("donate full error:", err);
     const error = err as any;
@@ -160,10 +164,20 @@ export const getAllCampaigns = async (): Promise<StellarResponse<unknown[]>> => 
     
     if (rpc.Api.isSimulationSuccess(simulation) && simulation.result) {
       const campaignsMap = scValToNative(simulation.result.retval);
+      console.log("getAllCampaigns raw result:", campaignsMap);
       
       // The contract returns a Map<u32, Campaign>
       if (campaignsMap instanceof Map) {
         const campaignsArray = Array.from(campaignsMap.entries()).map(([id, campaign]) => ({
+          ...(campaign as any),
+          id: Number(id)
+        }));
+        return { success: true, data: campaignsArray };
+      }
+      
+      // If it's a plain object (sometimes scValToNative does this for Maps)
+      if (typeof campaignsMap === 'object' && campaignsMap !== null) {
+        const campaignsArray = Object.entries(campaignsMap).map(([id, campaign]) => ({
           ...(campaign as any),
           id: Number(id)
         }));
@@ -227,8 +241,12 @@ export const getDonations = async (campaignId: number): Promise<StellarResponse<
     
     if (rpc.Api.isSimulationSuccess(simulation) && simulation.result) {
       const donations = scValToNative(simulation.result.retval);
+      console.log(`getDonations raw result for ${campaignId}:`, donations);
       if (donations instanceof Map) {
          return { success: true, data: Array.from(donations.entries()) };
+      }
+      if (typeof donations === 'object' && donations !== null && !Array.isArray(donations)) {
+        return { success: true, data: Object.entries(donations) };
       }
       return { success: true, data: Array.isArray(donations) ? donations : [] };
     }

@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { shortenAddress, formatXLM } from "@/lib/utils";
-import { History, ExternalLink, Receipt, Clock } from "lucide-react";
+import { History, ExternalLink, Receipt, Clock, Copy, Check } from "lucide-react";
 
 interface Transaction {
   id: string;
   campaignId: number;
+  campaignTitle?: string;
   amount: number;
   donor: string;
   hash: string;
@@ -15,6 +16,13 @@ interface Transaction {
 
 const TransactionHistory = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const copyHash = (hash: string, txId: string) => {
+    navigator.clipboard.writeText(hash);
+    setCopiedId(txId);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   useEffect(() => {
     const loadTransactions = () => {
@@ -70,16 +78,26 @@ const TransactionHistory = () => {
               {transactions.map((tx) => (
                 <tr key={tx.id} className="group hover:bg-white/5 transition-colors">
                   <td className="py-4">
-                    <p className="text-sm font-black text-zinc-900 dark:text-white">{getCampaignName(tx.campaignId)}</p>
+                    <p className="text-sm font-black text-zinc-900 dark:text-white">
+                      {tx.campaignTitle || getCampaignName(tx.campaignId)}
+                    </p>
                     <p className="text-[10px] text-zinc-500 font-bold">ID #{tx.campaignId}</p>
                   </td>
                   <td className="py-4">
                     <span className="text-sm font-black text-blue-600">+{formatXLM(tx.amount)} XLM</span>
                   </td>
                   <td className="py-4">
-                    <span className="text-[10px] font-mono text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-md">
-                      {tx.hash.slice(0, 10)}...
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-md">
+                        {tx.hash.slice(0, 10)}...
+                      </span>
+                      <button 
+                        onClick={() => copyHash(tx.hash, tx.id)}
+                        className="p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        {copiedId === tx.id ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3 text-zinc-400" />}
+                      </button>
+                    </div>
                   </td>
                   <td className="py-4 text-right">
                     <a 

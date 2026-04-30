@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getCampaign } from "@/services/stellar";
+import { getCampaign, getAllCampaigns } from "@/services/stellar";
 import CampaignCard from "./CampaignCard";
 import { 
   Loader2, 
@@ -23,12 +23,19 @@ const CampaignList = () => {
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const fetchCampaigns = async () => {
-    setLoading(true);
+  const fetchCampaigns = async (isRefresh = false) => {
+    if (!isRefresh) setLoading(true);
     setError(null);
     try {
-      // Fetch real data for each hardcoded campaign
-      const updatedCampaigns = await Promise.all(
+      // 1. Fetch all campaigns from contract
+      const allRes = await getAllCampaigns();
+      let contractCampaigns: any[] = [];
+      if (allRes.success && Array.isArray(allRes.data)) {
+        contractCampaigns = allRes.data;
+      }
+
+      // 2. Fetch real data for each hardcoded campaign
+      const hardcodedWithData = await Promise.all(
         HARDCODED_CAMPAIGNS.map(async (c) => {
           try {
             const res = await getCampaign(c.id);
@@ -36,19 +43,33 @@ const CampaignList = () => {
               const data = res.data as any;
               return {
                 ...c,
-                owner: data.owner,
-                raised: data.raised,
-                goal: data.goal, // Use goal from contract if available, else hardcoded
+                owner: data.owner?.toString() || data.owner || "System",
+                raised: data.total !== undefined ? data.total : (data.raised !== undefined ? data.raised : 0),
+                goal: data.goal !== undefined ? data.goal : c.goal,
               };
             }
           } catch (err) {
             console.error(`Failed to fetch campaign ${c.id}`, err);
           }
-          // Fallback to hardcoded if fetch fails or contract doesn't have it yet
-          return { ...c, owner: "System", raised: 0 };
+          
+          // Try to find existing data in current state to avoid flickering to 0
+          const existing = campaigns.find(prev => prev.id === c.id);
+          return existing || { ...c, owner: "System", raised: 0 };
         })
       );
-      setCampaigns(updatedCampaigns);
+
+      // 3. Merge: Start with hardcoded, then add any NEW ones from contract
+      const hardcodedIds = HARDCODED_CAMPAIGNS.map(c => c.id);
+      const newCampaigns = contractCampaigns
+        .filter(c => !hardcodedIds.includes(c.id))
+        .map(c => ({
+          ...c,
+          owner: c.owner?.toString() || c.owner || "System",
+          raised: c.total !== undefined ? c.total : (c.raised !== undefined ? c.raised : 0),
+          goal: c.goal !== undefined ? c.goal : 0
+        }));
+      
+      setCampaigns([...hardcodedWithData, ...newCampaigns]);
     } catch (err) {
       setError("An error occurred while fetching campaigns");
     } finally {
@@ -57,7 +78,7 @@ const CampaignList = () => {
   };
 
   useEffect(() => {
-    fetchCampaigns();
+    fetchCampaigns(refreshKey > 0);
   }, [refreshKey]);
 
   useEffect(() => {

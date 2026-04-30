@@ -1,9 +1,11 @@
 /**
  * Shortens a Stellar address for display (e.g., GABC...XYZ)
  */
-export const shortenAddress = (address: string): string => {
+export const shortenAddress = (address: any): string => {
   if (!address) return "";
-  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  const addr = typeof address === "string" ? address : address.toString();
+  if (addr.length < 10) return addr;
+  return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
 };
 
 /**

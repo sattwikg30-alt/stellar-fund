@@ -94,7 +94,7 @@ export default function Home() {
 
         {/* Campaign Section */}
         <section id="explore" className="mb-32">
-          <CampaignList />
+          <CampaignList key={showCreate ? 'creating' : 'idle'} />
         </section>
 
         {/* Stats & Activity Section */}

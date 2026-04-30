@@ -26,11 +26,21 @@ interface CampaignCardProps {
 
 const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onDonated }) => {
   const { isConnected } = useWallet();
+  const [optimisticRaised, setOptimisticRaised] = useState<number | null>(null);
 
-  // Convert BigInt to Number for calculations
-  const goal = Number(campaign.goal);
-  const raised = Number(campaign.raised);
-  const progress = Math.min(Math.round((raised / goal) * 100), 100);
+  // Convert BigInt/String to Number for calculations
+  const goal = Number(campaign.goal || 0);
+  const rawRaised = campaign.raised !== undefined ? campaign.raised : (campaign as any).total;
+  const baseRaised = Number(rawRaised || 0);
+  
+  // Use optimistic value if available, otherwise use base
+  const raised = optimisticRaised !== null ? optimisticRaised : baseRaised;
+  const progress = goal > 0 ? Math.min(Math.round((raised / goal) * 100), 100) : 0;
+
+  // Reset optimistic raised when the campaign prop updates from the blockchain
+  React.useEffect(() => {
+    setOptimisticRaised(null);
+  }, [campaign.raised, (campaign as any).total]);
 
   return (
     <div className="group relative bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl border border-white/20 dark:border-zinc-800/50 rounded-[2rem] p-6 hover:shadow-2xl hover:shadow-blue-600/10 transition-all duration-500 flex flex-col h-full">
@@ -85,7 +95,16 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onDonated }) => {
       </div>
 
       {/* Donation Section */}
-      <Donate campaignId={campaign.id} onSuccess={onDonated} />
+      <Donate 
+        campaignId={campaign.id} 
+        campaignTitle={campaign.title} 
+        raised={raised}
+        goal={goal}
+        onSuccess={() => {
+          setOptimisticRaised(raised + Number((document.querySelector(`input[name="donate-amount-${campaign.id}"]`) as HTMLInputElement)?.value || 0));
+          if (onDonated) onDonated();
+        }} 
+      />
     </div>
   );
 };

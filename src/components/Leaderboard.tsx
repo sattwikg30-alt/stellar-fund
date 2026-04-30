@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getDonations } from "@/services/stellar";
+import { getDonations, getAllCampaigns } from "@/services/stellar";
 import { shortenAddress, formatXLM } from "@/lib/utils";
 import { Trophy, Medal, User, Loader2 } from "lucide-react";
 
@@ -15,9 +15,15 @@ const Leaderboard = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchAllDonations = async () => {
-    setLoading(true);
     try {
-      const campaignIds = [0, 1, 2];
+      // 1. Get all campaigns to find all IDs
+      const campaignRes = await getAllCampaigns();
+      let campaignIds = [0, 1, 2]; // Default hardcoded
+      if (campaignRes.success && Array.isArray(campaignRes.data)) {
+        const dynamicIds = (campaignRes.data as any[]).map(c => c.id);
+        campaignIds = Array.from(new Set([...campaignIds, ...dynamicIds]));
+      }
+
       const allDonations: Record<string, number> = {};
 
       await Promise.all(
@@ -25,7 +31,6 @@ const Leaderboard = () => {
           const res = await getDonations(id);
           if (res.success && res.data) {
             res.data.forEach((donation: any) => {
-              // Assuming donation is [address, amount] or {address, amount}
               let addr, amt;
               if (Array.isArray(donation)) {
                 [addr, amt] = donation;
