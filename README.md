@@ -21,7 +21,13 @@ Unlike traditional platforms, StellarFund removes the middleman. All funds are h
 
 ---
 
-## ✨ Key Features
+## 📺 Project Demo
+
+[![StellarFund Demo Video](https://drive.google.com/file/d/1mfKaFKRmfuQ8SmFB7M_I5VvNgXP8eBp6/view?usp=sharing)](https://drive.google.com/file/d/1mfKaFKRmfuQ8SmFB7M_I5VvNgXP8eBp6/view?usp=sharing)
+
+*Click the badge above to watch the full walkthrough of StellarFund in action!*
+
+---
 
 - **🚀 Instant Campaign Launch**: Create crowdfunding projects directly on the Stellar blockchain with defined funding goals.
 - **💎 Secure XLM Donations**: Support projects using Soroban smart contracts, ensuring funds are handled autonomously.
