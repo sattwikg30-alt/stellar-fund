@@ -21,7 +21,57 @@ Unlike traditional platforms, StellarFund removes the middleman. All funds are h
 
 ---
 
-## 🔗 Contract Information
+## ✨ Key Features
+
+- **🚀 Instant Campaign Launch**: Create crowdfunding projects directly on the Stellar blockchain with defined funding goals.
+- **💎 Secure XLM Donations**: Support projects using Soroban smart contracts, ensuring funds are handled autonomously.
+- **🏆 Global Leaderboard**: Real-time tracking of top contributors across all active campaigns.
+- **⚡ Live Activity Feed**: Instant updates of recent donations with links to the Stellar Expert explorer.
+- **📂 Transaction History**: Local tracking of your personal contributions with transaction hashes.
+- **🔌 Multi-Wallet Support**: Seamless integration with Freighter, Albedo, and xBull wallets.
+- **🎨 Modern Glassmorphism UI**: A beautiful, responsive interface designed for the best user experience.
+
+---
+
+```text
+stellar2.0/
+├── contract/                   # Soroban Smart Contract
+│   └── crowdfunding/
+│       └── contracts/
+│           └── hello-world/    # Main Rust contract logic
+│               └── src/lib.rs  # Core contract implementation
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   ├── components/             # Reusable UI components
+│   │   ├── CampaignCard.tsx    # Individual campaign display
+│   │   ├── Donate.tsx          # Donation logic & UI
+│   │   ├── Leaderboard.tsx     # Top donor tracking
+│   │   └── ActivityFeed.tsx    # Live blockchain updates
+│   ├── context/                # Wallet & Global state providers
+│   ├── lib/                    # SDK initializations & utils
+│   │   ├── contract.ts         # Contract constants
+│   │   └── wallet.ts           # Wallet connection helpers
+│   └── services/               # Blockchain interaction logic
+│       └── stellar.ts          # Soroban RPC & transaction calls
+└── public/                     # Static assets & icons
+```
+
+---
+
+## 📊 Tech Stack & Resources
+
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Frontend** | [Next.js 15](https://nextjs.org/) | React Framework with App Router |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) | Type-safe development |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) | Modern Glassmorphism UI |
+| **Blockchain** | [Soroban (Stellar)](https://soroban.stellar.org/) | Smart Contract Platform |
+| **Smart Contract** | [Rust](https://www.rust-lang.org/) | Secure contract logic |
+| **SDK** | [Stellar SDK](https://github.com/stellar/js-stellar-sdk) | RPC communication |
+| **Wallet Kit** | [Stellar Wallets Kit](https://github.com/Creit-Tech/Stellar-Wallets-Kit) | Multi-wallet integration |
+| **Icons** | [Lucide React](https://lucide.dev/) | Consistent iconography |
+
+---
 * **Deployed Contract Address:** `CAHJIP3GBQIXOK2HULS7ALYI2PTKEXEMQYMKAESD3BOZQ2BD5QRUWO56`
 * **Network:** Stellar Testnet
 * **Example Transaction Hash (Deployment/Call):** 
@@ -41,7 +91,7 @@ Unlike traditional platforms, StellarFund removes the middleman. All funds are h
 ### Frontend Installation
 1. Clone the repository:
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/sattwikg30-alt/stellar-fund.git
    cd stellar2.0
    ```
 
@@ -78,10 +128,13 @@ stellar contract deploy --wasm target/wasm32v1-none/release/hello_world.wasm --s
 
 ### Wallet Options
 ![Wallet Options Screenshot](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777569968/Screenshot_2026-04-30_224942_se3h0c.png) 
-Wallet Options Screenshot.
+Wallet Options- multiwallet.
 
 ![Wallet transaction ](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570036/Screenshot_2026-04-30_225210_npmjde.png)
-wallet trans
+Wallet transactions 
 
 ![history ](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570099/Screenshot_2026-04-30_225145_r1swmb.png)
-history
+History
+
+![contract deployed and deployment id](https://res.cloudinary.com/dzjn1u0ln/image/upload/v1777570099/Screenshot_2026-04-30_225145_r1swmb.png)
+Contract deployed and deployment id
